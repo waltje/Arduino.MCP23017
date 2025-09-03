@@ -18,7 +18,7 @@ Available addresses go from `0x20` to `0x27`, allowing up to 8 MCP23017 on the s
 #include <Arduino.h>
 #include <MCP23017.h>
 
-MCP23017 mcp = MCP23017(0x24);
+MCP23017 mcp(0x24);
 ```
 
 Additionaly, you can specify the `Wire` instance to use as a second argument. For instance `MCP23017(0x24, Wire1)`.
