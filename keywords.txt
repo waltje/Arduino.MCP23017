@@ -1,0 +1,85 @@
+############################################
+# Syntax Coloring Map For MCP23017
+############################################
+
+
+############################################
+# Constants (LITERAL1)
+############################################
+MCP23017_I2C_ADDRESS	LITERAL1
+GPA0	LITERAL1
+GPA1	LITERAL1
+GPA2	LITERAL1
+GPA3	LITERAL1
+GPA4	LITERAL1
+GPA5	LITERAL1
+GPA6	LITERAL1
+GPA7	LITERAL1
+GPB0	LITERAL1
+GPB1	LITERAL1
+GPB2	LITERAL1
+GPB3	LITERAL1
+GPB4	LITERAL1
+GPB5	LITERAL1
+GPB6	LITERAL1
+GPB7	LITERAL1
+IODIR_A	LITERAL1
+IODIR_B	LITERAL1
+IPOL_A	LITERAL1
+IPOL_B	LITERAL1
+GPINTEN_A	LITERAL1
+GPINTEN_B	LITERAL1
+DEFVAL_A	LITERAL1
+DEFVAL_B	LITERAL1
+INTCON_A	LITERAL1
+INTCON_B	LITERAL1
+IOCON	LITERAL1
+GPPU_A	LITERAL1
+GPPU_B	LITERAL1
+INTF_A	LITERAL1
+INTF_B	LITERAL1
+INTCAP_A	LITERAL1
+INTCAP_B	LITERAL1
+GPIO_A	LITERAL1
+GPIO_B	LITERAL1
+OLAT_A	LITERAL1
+OLAT_B	LITERAL1
+
+
+############################################
+# Datatypes (KEYWORD1)
+############################################
+MCP23017	KEYWORD1
+MCP23017Port	KEYWORD1
+MCP23017Pin	KEYWORD1
+MCP23017InterruptMode	KEYWORD1
+MCP23017Register	KEYWORD1
+
+
+############################################
+# Interface Methods and Functions (KEYWORD2)
+############################################
+begin	KEYWORD2
+portMode	KEYWORD2
+pinMode	KEYWORD2
+digitalWrite	KEYWORD2
+digitalRead	KEYWORD2
+
+interruptMode	KEYWORD2
+interrupt	KEYWORD2
+disableInterrupt	KEYWORD2
+interruptedBy	KEYWORD2
+clearInterrupts	KEYWORD2
+clearInterrupts	KEYWORD2
+
+
+############################################
+# Interface Methods and Functions (KEYWORD3)
+############################################
+init	KEYWORD3
+write	KEYWORD3
+writeRegister	KEYWORD3
+writePort	KEYWORD3
+read	KEYWORD3
+readRegister	KEYWORD3
+readPort	KEYWORD3

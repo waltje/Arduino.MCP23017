@@ -21,7 +21,7 @@ Available addresses go from `0x20` to `0x27`, allowing up to 8 MCP23017 on the s
 MCP23017 mcp = MCP23017(0x24);
 ```
 
-Additionaly, you can specify the `Wire` instance to use as a second argument. For instance `MCP23017(0x24, Wire1)`.  
+Additionaly, you can specify the `Wire` instance to use as a second argument. For instance `MCP23017(0x24, Wire1)`.
 See included examples for further usage.
 
 ## Warning about GPA7 & GPB7
