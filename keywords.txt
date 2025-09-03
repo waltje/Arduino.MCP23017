@@ -7,6 +7,8 @@
 # Constants (LITERAL1)
 ############################################
 MCP23017_I2C_ADDRESS	LITERAL1
+Separated	LITERAL1
+Or	LITERAL1
 GPA0	LITERAL1
 GPA1	LITERAL1
 GPA2	LITERAL1
