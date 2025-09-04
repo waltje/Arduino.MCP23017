@@ -1,14 +1,12 @@
 ############################################
-# Syntax Coloring Map For MCP23017
+# Syntax Coloring Map For IOExpander
 ############################################
 
 
 ############################################
 # Constants (LITERAL1)
 ############################################
-MCP23017_I2C_ADDRESS	LITERAL1
-Separated	LITERAL1
-Or	LITERAL1
+MCP23017_ADDRESS	LITERAL1
 GPA0	LITERAL1
 GPA1	LITERAL1
 GPA2	LITERAL1
@@ -25,6 +23,8 @@ GPB4	LITERAL1
 GPB5	LITERAL1
 GPB6	LITERAL1
 GPB7	LITERAL1
+IntrSeparated	LITERAL1
+IntrOr	LITERAL1
 IODIR_A	LITERAL1
 IODIR_B	LITERAL1
 IPOL_A	LITERAL1
@@ -46,16 +46,20 @@ GPIO_A	LITERAL1
 GPIO_B	LITERAL1
 OLAT_A	LITERAL1
 OLAT_B	LITERAL1
+PORT_A	LITERAL1
+PORT_B	LITERAL1
 
 
 ############################################
 # Datatypes (KEYWORD1)
 ############################################
+IOExpander
 MCP23017	KEYWORD1
-MCP23017Port	KEYWORD1
-MCP23017Pin	KEYWORD1
-MCP23017InterruptMode	KEYWORD1
-MCP23017Register	KEYWORD1
+MCP23S17	KEYWORD1
+PortName	KEYWORD1
+PinName	KEYWORD1
+RegisterName	KEYWORD1
+InterruptMode	KEYWORD1
 
 
 ############################################
@@ -78,7 +82,15 @@ clearInterrupts	KEYWORD2
 ############################################
 # Interface Methods and Functions (KEYWORD3)
 ############################################
-init	KEYWORD3
+setWire	KEYWORD3
+setWireFrequency	KEYWORD3
+setPins	KEYWORD3
+setSPI	KEYWORD3
+setSPIFrequency	KEYWORD3
+
+reset	KEYWORD3
+end	KEYWORD3
+
 write	KEYWORD3
 writeRegister	KEYWORD3
 writePort	KEYWORD3
