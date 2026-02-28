@@ -7,11 +7,11 @@
  *
  *              Definitions for the API part of the library.
  *
- * Version:     @(#)IOExpander.h 2.0.1  2025/09/02
+ * Version:     @(#)IOExpander.h 2.0.2  2026/01/15
  *
  * Author:      Fred N. van Kempen, <decwiz@yahoo.com>
  *
- *              Copyright 2024,2025 MicroWalt Corporation LLC.
+ *              Copyright 2024-2026 MicroWalt Corporation LLC.
  *
  *              Redistribution and  use  in source  and binary forms, with
  *              or  without modification, are permitted  provided that the
@@ -71,14 +71,6 @@ class IOExpander {
     virtual void pinMode(uint8_t pin, uint8_t mode, bool inverted = false) = 0;
 
     /*
-     * Controls the pins direction on a whole port at once.
-     * 
-     * 1 = Pin is configured as an input.
-     * 0 = Pin is configured as an output.
-     */
-    virtual void portMode(uint8_t port, uint8_t directions, uint8_t pullups = 0xff, uint8_t inverted = 0x00) = 0;
-
-    /*
      * Writes a single pin state.
      * Pin 0-7 for port A, 8-15 for port B.
      * 
@@ -97,12 +89,28 @@ class IOExpander {
     virtual uint8_t digitalRead(uint8_t pin) = 0;
 
     /*
+     * Controls the pins direction on a whole port at once.
+     * 
+     * 1 = Pin is configured as an input.
+     * 0 = Pin is configured as an output.
+     */
+#ifdef IOEXPANDER_TWO_PORTS
+    virtual void portMode(uint8_t port, uint8_t directions, uint8_t pullups = 0xff, uint8_t inverted = 0x00) = 0;
+#else
+    virtual void portMode(uint8_t directions, uint8_t pullups = 0xff, uint8_t inverted = 0x00) = 0;
+#endif
+
+    /*
      * Writes pins state to a whole port.
      * 
      * 1 = Logic-high
      * 0 = Logic-low
      */
+#ifdef IOEXPANDER_TWO_PORTS
     virtual void writePort(uint8_t port, uint8_t value) = 0;
+#else
+    virtual void writePort(uint8_t value) = 0;
+#endif
 
     /*
      * Writes pins state to both ports.
@@ -110,7 +118,11 @@ class IOExpander {
      * 1 = Logic-high
      * 0 = Logic-low
      */
+#ifdef IOEXPANDER_TWO_PORTS
     virtual void write(uint16_t value) = 0;
+#else
+    virtual void write(uint8_t value) = 0;
+#endif
 
     /*
      * Reads pins state for a whole port.
@@ -118,7 +130,11 @@ class IOExpander {
      * 1 = Logic-high
      * 0 = Logic-low
      */
+#ifdef IOEXPANDER_TWO_PORTS
     virtual uint8_t readPort(uint8_t port) = 0;
+#else
+    virtual uint8_t readPort(void) = 0;
+#endif
 
     /*
      * Reads pins state for both ports. 
@@ -126,24 +142,39 @@ class IOExpander {
      * 1 = Logic-high
      * 0 = Logic-low
      */
+#ifdef IOEXPANDER_TWO_PORTS
     virtual uint16_t read(void) = 0;
+#else
+    virtual uint8_t read(void) = 0;
+#endif
 
-#ifdef _IOExpander_Enable_Interrupts
     /*
      * Configures interrupt registers using an Arduino-like API.
      * mode can be one of CHANGE, FALLING or RISING.
      */
+# ifdef IOEXPANDER_TWO_PORTS
     virtual void interrupt(uint8_t port, uint8_t mode) = 0;
+# else
+    virtual void interrupt(uint8_t mode) = 0;
+# endif
 
     /*
      * Disable interrupts for the specified port.
      */
+# ifdef IOEXPANDER_TWO_PORTS
     virtual void disableInterrupt(uint8_t port) = 0;
+# else
+    virtual void disableInterrupt(void) = 0;
+# endif
 
     /*
      * Reads which pin caused the interrupt.
      */
-    virtual void interruptedBy(uint8_t& portA, uint8_t& portB) = 0;
+# ifdef IOEXPANDER_TWO_PORTS
+    virtual void interruptedBy(uint8_t *portA, uint8_t *portB) = 0;
+# else
+    virtual void interruptedBy(uint8_t *portA) = 0;
+# endif
 
     /*
      * Clears interrupts on both ports.
@@ -154,14 +185,17 @@ class IOExpander {
      * Clear interrupts on both ports.
      * Returns port values at the time the interrupt occured.
      */
-    virtual void clearInterrupts(uint8_t& portA, uint8_t& portB) = 0;
-#endif
+# ifdef IOEXPANDER_TWO_PORTS
+    virtual void clearInterrupts(uint8_t *portA, uint8_t *portB) = 0;
+# else
+    virtual void clearInterrupts(uint8_t *portA) = 0;
+# endif
 
     /*
      * Sometimes an application wants to read registers...
      */
     virtual uint8_t readRegister(uint8_t reg) = 0;
-    virtual void readRegister(uint8_t reg, uint8_t& portA, uint8_t& portB) = 0;
+    virtual void readRegister(uint8_t reg, uint8_t *portA, uint8_t *portB) = 0;
     virtual void writeRegister(uint8_t reg, uint8_t val) = 0;
     virtual void writeRegister(uint8_t reg, uint8_t portA, uint8_t portB) = 0;
 

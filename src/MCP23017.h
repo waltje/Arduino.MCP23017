@@ -7,12 +7,12 @@
  *
  *              Definitions for the MCP23017 I/O expander chip class.
  *
- * Version:     @(#)MCP23017.h 2.0.1  2025/09/02
+ * Version:     @(#)MCP23017.h 2.0.3  2026/02/20
  *
  * Authors:     Fred N. van Kempen, <decwiz@yahoo.com>
  *              Bertrand Lemasle, <https://github.com/blemasle>
  *
- *              Copyright 2024,2025 MicroWalt Corporation LLC.
+ *              Copyright 2024-2026 MicroWalt Corporation LLC.
  *              Copyright 2017-2024 Bertrand Lemasle.
  *
  *              Redistribution and  use  in source  and binary forms, with
@@ -49,6 +49,12 @@
 # define MCP23017_H
 
 # include <Arduino.h>
+
+# define IOEXPANDER_TWO_PORTS
+
+# ifdef CLASS_NAME
+#  undef CLASS_NAME
+# endif
 # ifdef MCP23017_USE_SPI
 #  define CLASS_NAME MCP23S17
 #  include "IOExpander_SPI.h"
@@ -265,11 +271,10 @@ class CLASS_NAME : public IOExpander_I2C {
     void readRegister(uint8_t reg, uint8_t& portA, uint8_t& portB);
 #endif
 
-#ifdef MCP23017_ENABLE_INTERRUPTS
     /*
      * Controls how the interrupt pins act with each other.
      * If intMode is Separated, interrupt conditions on a port will cause its respective INT pin to active.
-     * If intMode is Or, interrupt pins are OR'ed so an interrupt on one of the port will cause both pints to active.
+     * If intMode is Or, interrupt pins are OR'ed so an interrupt on one of the port will cause both pins to activate.
      * 
      * Controls the IOCON.MIRROR bit. 
      * See "3.5.6 Configuration register".
@@ -283,6 +288,13 @@ class CLASS_NAME : public IOExpander_I2C {
     void interrupt(uint8_t port, uint8_t mode);
 
     /*
+     * Configures interrupt registers using an Arduino-like API.
+     * pin can be between 0 and 7.
+     * mode can be one of CHANGE, FALLING or RISING.
+     */
+    void interruptPin(uint8_t pin, uint8_t mode);
+
+    /*
      * Disable interrupts for the specified port.
      */
     void disableInterrupt(uint8_t port);
@@ -290,7 +302,7 @@ class CLASS_NAME : public IOExpander_I2C {
     /*
      * Reads which pin caused the interrupt.
      */
-    void interruptedBy(uint8_t& portA, uint8_t& portB);
+    void interruptedBy(uint8_t *portA, uint8_t *portB);
 
     /*
      * Clears interrupts on both ports.
@@ -300,8 +312,7 @@ class CLASS_NAME : public IOExpander_I2C {
     /*
      * Clear interrupts on both ports. Returns port values at the time the interrupt occured.
      */
-    void clearInterrupts(uint8_t& portA, uint8_t& portB);
-#endif
+    void clearInterrupts(uint8_t *portA, uint8_t *portB);
 };
 
 

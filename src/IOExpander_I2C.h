@@ -7,11 +7,11 @@
  *
  *              Definitions for the I2C interface class.
  *
- * Version:     @(#)IOExpander_I2C.h 2.0.1  2025/09/02
+ * Version:     @(#)IOExpander_I2C.h 2.0.2  2026/01/15
  *
  * Author:      Fred N. van Kempen, <decwiz@yahoo.com>
  *
- *              Copyright 2024,2025 MicroWalt Corporation LLC.
+ *              Copyright 2024-2026 MicroWalt Corporation LLC.
  *
  *              Redistribution and  use  in source  and binary forms, with
  *              or  without modification, are permitted  provided that the
@@ -64,7 +64,7 @@ class IOExpander_I2C : virtual public IOExpander {
     void end(void);
 
     uint8_t readRegister(uint8_t reg);
-    void readRegister(uint8_t reg, uint8_t& portA, uint8_t& portB);
+    void readRegister(uint8_t reg, uint8_t *portA, uint8_t *portB);
     void writeRegister(uint8_t reg, uint8_t val);
     void writeRegister(uint8_t reg, uint8_t portA, uint8_t portB);
 

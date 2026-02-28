@@ -5,13 +5,17 @@
  *
  *              This file is part of the IOExpander Library for Arduino.
  *
+ *              Driver class for the Microchip MCP23S08 I/O expander chip.
+ *
+ *              We simply flag the use of SPI, and include the I2C file.
+ *
+ * Version:     @(#)MCP23S08.cpp 1.0.1  2025/09/03
+ *
  * Authors:     Fred N. van Kempen, <decwiz@yahoo.com>
- *              Bertrand Lemasle, <https://github.com/blemasle>
  *              Felix Thommen, <https://github.com/felix1024>
  *
- *              Copyright 2024,2025 MicroWalt Corporation LLC.
+ *              Copyright 2025 MicroWalt Corporation LLC.
  *              Copyright 2024 Felix Thommen.
- *              Copyright 2017-2024 Bertrand Lemasle.
  *
  *              Redistribution and  use  in source  and binary forms, with
  *              or  without modification, are permitted  provided that the
@@ -43,3 +47,5 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING  IN ANY  WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+#define MCP23008_USE_SPI
+#include "MCP23008.cpp"

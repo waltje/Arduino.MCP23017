@@ -9,12 +9,12 @@
  *
  *              We simply flag the use of SPI, and include the I2C file.
  *
- * Version:     @(#)MCP23S17.cpp 1.0.1  2025/09/02
+ * Version:     @(#)MCP23S17.cpp 1.0.2  2026/01/15
  *
  * Authors:     Fred N. van Kempen, <decwiz@yahoo.com>
  *              Felix Thommen, <https://github.com/felix1024>
  *
- *              Copyright 2025 MicroWalt Corporation LLC.
+ *              Copyright 2025,2026 MicroWalt Corporation LLC.
  *              Copyright 2024 Felix Thommen.
  *
  *              Redistribution and  use  in source  and binary forms, with

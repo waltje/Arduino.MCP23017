@@ -7,11 +7,11 @@
  *
  *              Interface class for devices connected through SPI.
  *
- * Version:     @(#)IOExpander_SPI.cpp 2.0.1  2025/09/02
+ * Version:     @(#)IOExpander_SPI.cpp 2.0.3  2026/02/26
  *
  * Author:      Fred N. van Kempen, <decwiz@yahoo.com>
  *
- *              Copyright 2024,2025 MicroWalt Corporation LLC.
+ *              Copyright 2024-2026 MicroWalt Corporation LLC.
  *
  *              Redistribution and  use  in source  and binary forms, with
  *              or  without modification, are permitted  provided that the
@@ -60,8 +60,8 @@
 
 IOExpander_SPI::IOExpander_SPI() :
   _spi(NULL),
-  _speed(SPI_FREQUENCY),
   _spiSettings(SPI_FREQUENCY, MSBFIRST, SPI_MODE0),
+  _speed(SPI_FREQUENCY),
   _address(0xff),
   _ss(-1),
   _intr(-1)
@@ -163,15 +163,15 @@ IOExpander_SPI::readRegister(uint8_t reg)
 
 
 void
-IOExpander_SPI::readRegister(uint8_t reg, uint8_t& portA, uint8_t& portB)
+IOExpander_SPI::readRegister(uint8_t reg, uint8_t *portA, uint8_t *portB)
 {
   ::digitalWrite(_ss, LOW);
 
   _spi->beginTransaction(_spiSettings);
   (void)_spi->transfer((_address << 1) | OPCODE_R);
   (void)_spi->transfer(reg);
-  portA = _spi->transfer(0x00);
-  portB = _spi->transfer(0x00);
+  *portA = _spi->transfer(0x00);
+  *portB = _spi->transfer(0x00);
   _spi->endTransaction();
 
   ::digitalWrite(_ss, HIGH);

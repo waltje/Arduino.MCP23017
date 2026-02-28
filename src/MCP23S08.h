@@ -5,13 +5,13 @@
  *
  *              This file is part of the IOExpander Library for Arduino.
  *
- * Authors:     Fred N. van Kempen, <decwiz@yahoo.com>
- *              Bertrand Lemasle, <https://github.com/blemasle>
- *              Felix Thommen, <https://github.com/felix1024>
+ *              Definitions for the MCP23S08 I/O expander chip class.
  *
- *              Copyright 2024,2025 MicroWalt Corporation LLC.
- *              Copyright 2024 Felix Thommen.
- *              Copyright 2017-2024 Bertrand Lemasle.
+ * Version:     @(#)MCP23S17.h 1.0.1  2025/09/03
+ *
+ * Author:      Fred N. van Kempen, <decwiz@yahoo.com>
+ *
+ *              Copyright 2025 MicroWalt Corporation LLC.
  *
  *              Redistribution and  use  in source  and binary forms, with
  *              or  without modification, are permitted  provided that the
@@ -43,3 +43,16 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING  IN ANY  WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+#ifndef MCP23S08_H
+# define MCP23S08_H
+
+# define MCP23008_USE_SPI
+
+# ifdef MCP23008_H
+#  undef MCP23008_H
+#  undef CLASS_NAME
+# endif
+# include "MCP23008.h"
+
+
+#endif  /*MCP23S08_H*/

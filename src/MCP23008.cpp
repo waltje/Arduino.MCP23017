@@ -5,21 +5,21 @@
  *
  *              This file is part of the IOExpander Library for Arduino.
  *
- *              Driver class for the Microchip MCP23017 I/O expander chip.
+ *              Driver class for the Microchip MCP23008 I/O expander chip.
  *
  * NOTE         To avoid duplicating lots of code, we use some tricks with
  *              macros. The "default" version of this file will compile for
- *              use with I2C.  If MCP23017_USE_SPI is defined, it will do
- *              a compile for use with SPI instead.  We have MCP23S17 .cpp
+ *              use with I2C.  If MCP23008_USE_SPI is defined, it will do
+ *              a compile for use with SPI instead.  We have MCP23S08 .cpp
  *              and .h files which just set this macro, and then include
  *              this file (and its .h file.)
  *
- * Version:     @(#)MCP23017.cpp 2.0.3  2026/02/20
+ * Version:     @(#)MCP23008.cpp 1.0.2  2026/01/15
  *
  * Authors:     Fred N. van Kempen, <decwiz@yahoo.com>
  *              Bertrand Lemasle, <https://github.com/blemasle>
  *
- *              Copyright 2024 2026 MicroWalt Corporation LLC.
+ *              Copyright 2024-2026 MicroWalt Corporation LLC.
  *              Copyright 2017-2024 Bertrand Lemasle.
  *
  *              Redistribution and  use  in source  and binary forms, with
@@ -52,10 +52,10 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING  IN ANY  WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-#include "MCP23017.h"
+#include "MCP23008.h"
 
 
-#ifdef MCP23017_USE_SPI
+#ifdef MCP23008_USE_SPI
 CLASS_NAME::CLASS_NAME(SPIClass *spi, int ss)
 {
   setSPI(spi);
@@ -107,7 +107,7 @@ CLASS_NAME::begin(uint8_t address)
      * INTPOL       = 0 : interrupt active low
      * UNIMPLMENTED   0 : unimplemented: Read as ‘0’
      */
-#ifdef MCP23017_USE_SPI
+#ifdef MCP23008_USE_SPI
     writeRegister(CLASS_NAME::IOCON, 0b00101000);
 #else
     writeRegister(CLASS_NAME::IOCON, 0b00100000);
@@ -121,17 +121,10 @@ CLASS_NAME::begin(uint8_t address)
 void
 CLASS_NAME::pinMode(uint8_t pin, uint8_t mode, bool inverted)
 {
-  uint8_t iodirreg = CLASS_NAME::IODIR_A;
-  uint8_t pullupreg = CLASS_NAME::GPPU_A;
-  uint8_t polreg = CLASS_NAME::IPOL_A;
+  uint8_t iodirreg = CLASS_NAME::IODIR;
+  uint8_t pullupreg = CLASS_NAME::GPPU;
+  uint8_t polreg = CLASS_NAME::IPOL;
   uint8_t iodir, pol, pull;
-
-  if (pin > 7) {
-    iodirreg = CLASS_NAME::IODIR_B;
-    pullupreg = CLASS_NAME::GPPU_B;
-    polreg = CLASS_NAME::IPOL_B;
-    pin -= 8;
-  }
 
   iodir = readRegister(iodirreg);
   if (mode == INPUT || mode == INPUT_PULLUP)
@@ -158,24 +151,19 @@ CLASS_NAME::pinMode(uint8_t pin, uint8_t mode, bool inverted)
 
 
 void
-CLASS_NAME::portMode(uint8_t port, uint8_t directions, uint8_t pullups, uint8_t inverted)
+CLASS_NAME::portMode(uint8_t directions, uint8_t pullups, uint8_t inverted)
 {
-  writeRegister(CLASS_NAME::IODIR_A + port, directions);
-  writeRegister(CLASS_NAME::GPPU_A + port, pullups);
-  writeRegister(CLASS_NAME::IPOL_A + port, inverted);
+  writeRegister(CLASS_NAME::IODIR, directions);
+  writeRegister(CLASS_NAME::GPPU, pullups);
+  writeRegister(CLASS_NAME::IPOL, inverted);
 }
 
 
 void
 CLASS_NAME::digitalWrite(uint8_t pin, uint8_t state)
 {
-  uint8_t gpioreg = CLASS_NAME::GPIO_A;
+  uint8_t gpioreg = CLASS_NAME::GPIO;
   uint8_t gpio;
-
-  if (pin > 7) {
-    gpioreg = CLASS_NAME::GPIO_B;
-    pin -= 8;
-  }
 
   gpio = readRegister(gpioreg);
   if (state == HIGH)
@@ -190,11 +178,11 @@ CLASS_NAME::digitalWrite(uint8_t pin, uint8_t state)
 uint8_t
 CLASS_NAME::digitalRead(uint8_t pin)
 {
-  uint8_t gpioreg = CLASS_NAME::GPIO_A;
+  uint8_t gpioreg = CLASS_NAME::GPIO;
   uint8_t gpio;
 
   if (pin > 7) {
-    gpioreg = CLASS_NAME::GPIO_B;
+    gpioreg = CLASS_NAME::GPIO;
     pin -=8;
   }
 
@@ -208,58 +196,41 @@ CLASS_NAME::digitalRead(uint8_t pin)
 
 
 void
-CLASS_NAME::writePort(uint8_t port, uint8_t value)
+CLASS_NAME::writePort(uint8_t value)
 {
-  writeRegister(CLASS_NAME::GPIO_A + port, value);
+  writeRegister(CLASS_NAME::GPIO, value);
 }
 
 
 void
-CLASS_NAME::write(uint16_t value)
+CLASS_NAME::write(uint8_t value)
 {
-  writeRegister(CLASS_NAME::GPIO_A, lowByte(value), highByte(value));
+  writeRegister(CLASS_NAME::GPIO, value);
 }
 
 
 uint8_t
-CLASS_NAME::readPort(uint8_t port)
+CLASS_NAME::readPort(void)
 {
-  return readRegister(CLASS_NAME::GPIO_A + port);
+  return readRegister(CLASS_NAME::GPIO);
 }
 
 
-uint16_t
+uint8_t
 CLASS_NAME::read(void)
 {
-  uint8_t a = readPort(CLASS_NAME::PORT_A);
-  uint8_t b = readPort(CLASS_NAME::PORT_B);
-
-  return a | b << 8;
+  return readRegister(CLASS_NAME::GPIO);
 }
 
 
 void
-CLASS_NAME::interruptMode(CLASS_NAME::InterruptMode_t intMode)
+CLASS_NAME::interrupt(uint8_t mode)
 {
-  uint8_t iocon = readRegister(CLASS_NAME::IOCON);
-
-  if (intMode == CLASS_NAME::IntrOr)
-    iocon |= static_cast<uint8_t>(CLASS_NAME::IntrOr);
-  else
-    iocon &= ~(static_cast<uint8_t>(CLASS_NAME::IntrOr));
-
-  writeRegister(CLASS_NAME::IOCON, iocon);
-}
-
-
-void
-CLASS_NAME::interrupt(uint8_t port, uint8_t mode)
-{
-  uint8_t defvalreg = CLASS_NAME::DEFVAL_A + port;
-  uint8_t intconreg = CLASS_NAME::INTCON_A + port;
+  uint8_t defvalreg = CLASS_NAME::DEFVAL;
+  uint8_t intconreg = CLASS_NAME::INTCON;
 
   /* Enable interrupt for port. */
-  writeRegister(CLASS_NAME::GPINTEN_A + port, 0xff);
+  writeRegister(CLASS_NAME::GPINTEN, 0xff);
   switch (mode) {
     case CHANGE:        // interrupt on change
       writeRegister(intconreg, 0);
@@ -279,66 +250,30 @@ CLASS_NAME::interrupt(uint8_t port, uint8_t mode)
 
 
 void
-CLASS_NAME::interruptPin(uint8_t pin, uint8_t mode)
+CLASS_NAME::interruptedBy(uint8_t *portA)
 {
-  uint8_t defvalreg = CLASS_NAME::DEFVAL_A;
-  uint8_t intconreg = CLASS_NAME::INTCON_A;
-  uint8_t intenreg = CLASS_NAME::GPINTEN_A;
-  uint8_t val;
-
-  if (pin > 7) {
-    defvalreg = CLASS_NAME::DEFVAL_B;
-    intconreg = CLASS_NAME::INTCON_B;
-    intenreg = CLASS_NAME::GPINTEN_B;
-    pin -= 8;
-  }
-  val = (1 << pin);
-
-  /* Enable interrupt for pin on port. */
-  writeRegister(intenreg, val);
-  switch (mode) {
-    case CHANGE:        // interrupt on change
-      writeRegister(intconreg, 0);
-      break;
-
-    case FALLING:       // interrupt falling : compared against defval, 0xff
-      writeRegister(intconreg, val);
-      writeRegister(defvalreg, val);
-      break;
-
-    case RISING:        // interrupt rising : compared against defval, 0x00
-      writeRegister(intconreg, val);
-      writeRegister(defvalreg, 0x00);
-      break;
-  }
+  *portA = readRegister(CLASS_NAME::INTF);
 }
 
 
 void
-CLASS_NAME::interruptedBy(uint8_t *portA, uint8_t *portB)
+CLASS_NAME::disableInterrupt(void)
 {
-  readRegister(CLASS_NAME::INTF_A, portA, portB);
+  writeRegister(CLASS_NAME::GPINTEN, 0x00);
 }
 
 
 void
-CLASS_NAME::disableInterrupt(uint8_t port)
+CLASS_NAME::clearInterrupts(uint8_t *portA)
 {
-  writeRegister(CLASS_NAME::GPINTEN_A + port, 0x00);
-}
-
-
-void
-CLASS_NAME::clearInterrupts(uint8_t *portA, uint8_t *portB)
-{
-  readRegister(CLASS_NAME::INTCAP_A, portA, portB);
+  *portA = readRegister(CLASS_NAME::INTCAP);
 }
 
 
 void
 CLASS_NAME::clearInterrupts(void)
 {
-  uint8_t a, b;
+  uint8_t a;
 
-  clearInterrupts(&a, &b);
+  clearInterrupts(&a);
 }
